@@ -1,40 +1,25 @@
-# ==========================================
-# INSTALL GRADIO
-# ==========================================
-!pip install gradio joblib
-
-# ==========================================
-# IMPORT LIBRARIES
-# ==========================================
 import gradio as gr
 import joblib
 
-# ==========================================
-# LOAD MODEL
-# ==========================================
+
 model = joblib.load("fake_news_model.pkl")
 vectorizer = joblib.load("tfidf_vectorizer.pkl")
 
-# ==========================================
-# PREDICTION FUNCTION
-# ==========================================
 def predict_news(news_text):
 
     if news_text.strip() == "":
-        return "⚠️ Please enter news content"
+        return "⚠️ Please enter news text."
 
-    text_vec = vectorizer.transform([news_text])
+    text_vector = vectorizer.transform([news_text])
 
-    prediction = model.predict(text_vec)[0]
+    prediction = model.predict(text_vector)[0]
 
     if prediction == 1:
         return "🟢 Real News"
     else:
         return "🔴 Fake News"
 
-# ==========================================
-# CREATE INTERFACE
-# ==========================================
+
 app = gr.Interface(
     fn=predict_news,
 
@@ -47,20 +32,14 @@ app = gr.Interface(
         label="Prediction"
     ),
 
-    title="🧠 Fake News Detection System",
+    title="📰 Fake News Detection System",
 
-    description="""
-    Enter any news article and check whether
-    it is Real News or Fake News.
-    """,
+    description="Check whether a news article is Real or Fake using Machine Learning.",
 
     examples=[
-        ["Government launches new education scheme."],
-        ["Aliens have taken control of India."]
+        ["The Reserve Bank of India kept interest rates unchanged in its latest monetary policy meeting."],
+        ["Aliens landed in India and took control of all government offices."]
     ]
 )
 
-# ==========================================
-# LAUNCH APP
-# ==========================================
 app.launch(share=True)
